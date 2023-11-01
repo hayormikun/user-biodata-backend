@@ -1,6 +1,6 @@
 const User = require("../models/user");
 const cloudinary = require("../cloudinary");
-// const sendmail = require("../sendmail")
+const sendmail = require("../sendmail");
 
 const user_info = async (req, res, next) => {
   const { company, name, email, phone, language, domain, project, message } =
@@ -26,7 +26,6 @@ const user_info = async (req, res, next) => {
       return upload.secure_url;
     })
   );
-  console.log('upload: ', uploadedImgs )
  
   if (uploadedImgs != "undefned") {
     const user = new User({
@@ -44,7 +43,7 @@ const user_info = async (req, res, next) => {
     user
       .save()
       .then((data) => {
-        console.log(data);
+        sendmail(data)
         res.send(data);
       })
       .catch((err) => {

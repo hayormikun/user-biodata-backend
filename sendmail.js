@@ -1,52 +1,49 @@
-const nodemailer = require('nodemailer');
+require("dotenv").config();
+const nodemailer = require("nodemailer");
 
-const sendmail = (options)=> {
-    let transporter = nodemailer.createTransport({
-        host: '',
-        port: 587,
-        secure: false,
-        auth: {
-            user: "",
-            pass: ""
-        }
-    })
+const sendmail = (options) => {
+  const attachments = options.images.map((image, index) => {
+    return {
+      filename: `image${index}`,
+      path: image,
+    };
+  });
+  let transporter = nodemailer.createTransport({
+    service: "gmail",
 
-    let mailOptions = {
-        from: '"Favour Akomolafe" <akomolafefavour@gmail.com>',
-        to: "",
-        subject: "User Registration Details",
-        text: "Successful Registration",
-        html: '<b>Hello world </b><br/> <br/> <img src="cid:image"/>',
-    
-        attachments: [
-            {
-                filename: '',
-                path: "",
-                cid: "image"
-            }
-        ]
+    auth: {
+      user: process.env.NODEMAILER_AUTHUSER,
+      pass: process.env.NODEMAILER_AUTHPASS,
+    },
+  });
+
+  let mailOptions = {
+    from: process.env.NODEMAILER_AUTHUSER,
+    to: options.email,
+    subject: "User Registration Details",
+    text: "Successful Registration",
+    html: `<h2>Hello ${options.name}, these are your registeration details: </h2>
+     <br/> <br/><ul>
+     <li>company name: ${options.company}</li>
+     <li>fullname: ${options.name}</li>
+     <li>email: ${options.email}</li>
+     <li>phone: ${options.phone}</li>
+     <li>language: ${options.language}</li>
+     <li>email: ${options.domain}</li>
+     <li>phone: ${options.project}</li>
+     <li>language: ${options.message}</li>
+     </ul>`,
+
+    attachments: attachments,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return console.log("error occurred while sending mail ", error);
     }
 
-    transporter.sendMail(mailOptions, (error, info)=>{
-        if(error) {
-            return console.log(error)
-        }
+    console.log("Email sent successfully to ", mailOptions.to);
+  });
+};
 
-        console.log("Message sent: %s", info.messageId)
-        console.log("Preview URL: %s", nodemailer.getTestMessageUrl())
-    })
-}
-
-module.exports = sendmail
-
-
-
-
-
-
-
-
-
-
-
-
+module.exports = sendmail;
