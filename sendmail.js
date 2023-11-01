@@ -29,9 +29,9 @@ const sendmail = (options) => {
      <li>email: ${options.email}</li>
      <li>phone: ${options.phone}</li>
      <li>language: ${options.language}</li>
-     <li>email: ${options.domain}</li>
-     <li>phone: ${options.project}</li>
-     <li>language: ${options.message}</li>
+     <li>domain: ${options.domain}</li>
+     <li>project: ${options.project}</li>
+     <li>message: ${options.message}</li>
      </ul>`,
 
     attachments: attachments,
