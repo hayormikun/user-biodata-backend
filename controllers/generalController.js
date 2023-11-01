@@ -1,66 +1,56 @@
 const User = require("../models/user");
 const cloudinary = require("../cloudinary");
+// const sendmail = require("../sendmail")
 
-const user_info = async (req, res) => {
-  // const {
-  //   company,
-  //   name,
-  //   email,
-  //   phone,
-  //   language,
-  //   domain,
-  //   project,
-  //   images,
-  //   message,
-  // } = req.body;
+const user_info = async (req, res, next) => {
+  const { company, name, email, phone, language, domain, project, message } =
+    req.body;
 
-  console.log(req.body)
+  const uploadedImgs = await Promise.all(
+    req.files.images.map(async (image) => {
+      const upload = await cloudinary.uploader.upload(
+        image.path,
+        {
+          upload_preset: process.env.CLOUDINARY_PRESET,
+          public_id: `${image.filename}`,
+          allowed_formats: ["png", "jpg", "jpeg"],
+        },
+        function (error, result) {
+          if (error) {
+            console.log(error);
+          }
+          return result.secure_url;
+        }
+      );
+      
+      return upload.secure_url;
+    })
+  );
+  console.log('upload: ', uploadedImgs )
+ 
+  if (uploadedImgs != "undefned") {
+    const user = new User({
+      company,
+      name,
+      email,
+      phone,
+      language,
+      domain,
+      project,
+      images: uploadedImgs,
+      message,
+    });
 
-  // const uploadedImgs = await Promise.all(
-  //   images.map(async (image) => {
-  //     const upload = await cloudinary.uploader.upload(
-  //       image,
-  //       {
-  //         upload_preset: process.env.CLOUDINARY_PRESET,
-  //         public_id: `project_${new Date()}`,
-  //         allowed_formats: ["png", "jpg", "jpeg"],
-  //       },
-  //       function (error, result) {
-  //         if (error) {
-  //           console.log(error);
-  //         }
-
-  //        const imgUrl = result.json()
-  //        console.log(imgUrl.secure_url)
-  //        return imgUrl.secure_url
-  //       }
-  //     );
-  //     return upload;
-  //   })
-  // );
-
-  // if (uploadedImgs != "undefned") {
-  //   const user = new User({
-  //     company,
-  //     name,
-  //     email,
-  //     phone,
-  //     language,
-  //     domain,
-  //     project,
-  //     images: uploadedImgs,
-  //     message,
-  //   });
-
-  //   user
-  //     .save()
-  //     .then((data) => {
-  //       res.send(data);
-  //     })
-  //     .catch((err) => {
-  //       console.error(err);
-  //     });
-  // }
+    user
+      .save()
+      .then((data) => {
+        console.log(data);
+        res.send(data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
 };
 
 module.exports = {
