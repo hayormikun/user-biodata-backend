@@ -10,7 +10,7 @@ const generalRoutes = require("./routes/generalRoutes");
 
 const app = express();
 
-const PORT = process.env.PORT || 5000;
+const port = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json({limit: '50mb'}));
@@ -22,7 +22,7 @@ mongoose
     useUnifiedTopology: true,
   })
   .then((res) => {
-    server.listen(PORT, () => {
+    server.listen(port, "0.0.0.0" () => {
       console.log("DB connected");
     });
   })
