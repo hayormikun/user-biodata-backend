@@ -40,8 +40,9 @@ const userSchema = new Schema(
 
     images: [
       {
-        type: String,
-        required: true,
+        extension: String,
+        url: String,
+        filename: String,
       },
     ],
 

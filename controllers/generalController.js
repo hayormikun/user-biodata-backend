@@ -19,11 +19,20 @@ const user_info = async (req, res, next) => {
           if (error) {
             console.log(error);
           }
-          return result.secure_url;
+        
+          return {
+            extention: result.format,
+            url: result.secure_url,
+            filename: result.original_filename
+          };
         }
       );
       
-      return upload.secure_url;
+      return {
+        extension: upload.format,
+        url: upload.secure_url,
+        filename: upload.original_filename
+      };
     })
   );
  
@@ -43,6 +52,7 @@ const user_info = async (req, res, next) => {
     user
       .save()
       .then((data) => {
+   
         sendmail(data)
         res.send(data);
       })

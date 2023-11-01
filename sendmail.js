@@ -4,8 +4,9 @@ const nodemailer = require("nodemailer");
 const sendmail = (options) => {
   const attachments = options.images.map((image, index) => {
     return {
-      filename: `image${index}`,
-      path: image,
+      filename: `${image.filename}.${image.extension}`,
+      path: image.url,
+
     };
   });
   let transporter = nodemailer.createTransport({
@@ -32,7 +33,8 @@ const sendmail = (options) => {
      <li>domain: ${options.domain}</li>
      <li>project: ${options.project}</li>
      <li>message: ${options.message}</li>
-     </ul>`,
+     </ul>
+     `,
 
     attachments: attachments,
   };
