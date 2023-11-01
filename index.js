@@ -22,7 +22,7 @@ mongoose
     useUnifiedTopology: true,
   })
   .then((res) => {
-    server.listen(port, "0.0.0.0" () => {
+    server.listen(port, "0.0.0.0", () => {
       console.log("DB connected");
     });
   })
